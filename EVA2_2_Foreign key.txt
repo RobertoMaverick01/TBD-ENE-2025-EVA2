@@ -1,0 +1,156 @@
+EVA2_2_Foreign key
+MySQL Shell 8.0.41
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect mc-- root@localhost
+Creating a session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 9 (X protocol)
+Server version: 8.0.41 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > use tbd_eva2
+Default schema set to `tbd_eva2`.
+Fetching global names, object names from `tbd_eva2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from cliente;
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         1 | Juan   | Perez     |
+|         2 | Luis   | Garcia    |
+|         3 | Jose   | Madero    |
++-----------+--------+-----------+
+3 rows in set (0.0019 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc tarjetaCliente;
+ERROR: 1146: Table 'tbd_eva2.tarjetacliente' doesn't exist
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table tarjetacliente(
+                                           -> tarjetaclID int not null key auto_increment,
+                                           -> clienteid int not null,
+                                           -> bancoid int not null,
+                                           -> tarjetaid int not null);
+Query OK, 0 rows affected (0.0618 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into tarjeta cliente(clienteid,bancoid,tarjetaid)
+                                           -> values(1,1,1);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cliente(clienteid,bancoid,tarjetaid)
+values(1,1,1)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into tarjeta cliente(clienteid,bancoid,tarjetaid) value(1,1,1);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cliente(clienteid,bancoid,tarjetaid) value(1,1,1)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into tarjeta cliente(clienteid, bancoid, tarjetaid) value(1, 1, 1);
+
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cliente(clienteid, bancoid, tarjetaid) value(1, 1, 1)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into tarjetacliente(clienteid, bancoid, tarjetaid) value(1, 1, 1);
+Query OK, 1 row affected (0.0217 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into tarjetacliente(clienteid, bancoid, tarjetaid) value(2, 2, 2);
+Query OK, 1 row affected (0.0161 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key(clienteid) references cliente(clienteid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(clienteid) references cliente(clienteid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key(clienteid) references cliente(clienteid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(clienteid) references cliente(clienteid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key(bancoid) references banco(bancoid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(bancoid) references banco(bancoid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc tarjetacliente;
++-------------+------+------+-----+---------+----------------+
+| Field       | Type | Null | Key | Default | Extra          |
++-------------+------+------+-----+---------+----------------+
+| tarjetaclID | int  | NO   | PRI | NULL    | auto_increment |
+| clienteid   | int  | NO   |     | NULL    |                |
+| bancoid     | int  | NO   |     | NULL    |                |
+| tarjetaid   | int  | NO   |     | NULL    |                |
++-------------+------+------+-----+---------+----------------+
+4 rows in set (0.0035 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desct banco;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desct banco' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc banco;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| bancoid | int         | NO   | PRI | NULL    | auto_increment |
+| nombre  | varchar(50) | NO   |     | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+2 rows in set (0.0028 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc tarjeta;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| tarjetaid | int         | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(50) | YES  |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+2 rows in set (0.0023 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key(tarjetaid) references tarjeta(ttarjetaid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(tarjetaid) references tarjeta(ttarjetaid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key(tarjetaid) references tarjeta(tarjetaid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(tarjetaid) references tarjeta(tarjetaid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key('tarjetaid') references tarjeta(tarjetaid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key('tarjetaid') references tarjeta(tarjetaid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreing key('tarjetaid') references tarjeta('tarjetaid');
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key('tarjetaid') references tarjeta('tarjetaid')' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table direccioncliente(
+                                           -> direccionid int not null key auto_increment,
+                                           -> calle varchar(50) not null,
+                                           -> numero int not null,
+                                           -> colonia varchar(50) not null,
+                                           -> cp int not null,
+                                           -> ciudad varchar(50),
+                                           -> estado varchar(50) not null,
+                                           -> pais varchar(50) not null, clienteid int not nulll);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'nulll)' at line 9
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table direccioncliente( direccionid int not null key auto_increment, calle varchar(50) not null, numero int not null, colonia varchar(50) not null, cp int not null, ciudad varchar(50) not null, estado varchar(50) not null, pais varchar(50) not null, clienteid int not null);
+Query OK, 0 rows affected (0.0404 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc direccioncliente;
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| direccionid | int         | NO   | PRI | NULL    | auto_increment |
+| calle       | varchar(50) | NO   |     | NULL    |                |
+| numero      | int         | NO   |     | NULL    |                |
+| colonia     | varchar(50) | NO   |     | NULL    |                |
+| cp          | int         | NO   |     | NULL    |                |
+| ciudad      | varchar(50) | NO   |     | NULL    |                |
+| estado      | varchar(50) | NO   |     | NULL    |                |
+| pais        | varchar(50) | NO   |     | NULL    |                |
+| clienteid   | int         | NO   |     | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+9 rows in set (0.0040 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table direccioncliente add foreing key(clienteid) references cliente(clienteid);
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(clienteid) references cliente(clienteid)' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table direccioncliente add foreign key(clienteid) references cliente(clienteid);
+Query OK, 0 rows affected (0.1956 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc direccioncliente;
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| direccionid | int         | NO   | PRI | NULL    | auto_increment |
+| calle       | varchar(50) | NO   |     | NULL    |                |
+| numero      | int         | NO   |     | NULL    |                |
+| colonia     | varchar(50) | NO   |     | NULL    |                |
+| cp          | int         | NO   |     | NULL    |                |
+| ciudad      | varchar(50) | NO   |     | NULL    |                |
+| estado      | varchar(50) | NO   |     | NULL    |                |
+| pais        | varchar(50) | NO   |     | NULL    |                |
+| clienteid   | int         | NO   | MUL | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+9 rows in set (0.0028 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreign key(clienteid) references cliente(clienteid);
+Query OK, 2 rows affected (0.1313 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreign key(bancoid) references banco(bancoid);
+Query OK, 2 rows affected (0.1609 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > alter table tarjetacliente add foreign key(tarjetaid) references tarjeta(tarjetaid);
+Query OK, 2 rows affected (0.1506 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into direccioncliente values(1,"Industrias",3466,"Complejo industrial Chihuahua",31100,"Chihuahua","Chihuahua","Mexico",1);
+Query OK, 1 row affected (0.0167 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into direccioncliente values(1,"Industrias",3466,"Complejo industrial Chihuahua",31100,"Chihuahua","Chihuahua","Mexico",5);
+ERROR: 1062: Duplicate entry '1' for key 'direccioncliente.PRIMARY'
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL >
