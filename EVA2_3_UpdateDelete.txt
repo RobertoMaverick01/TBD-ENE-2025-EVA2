@@ -1,0 +1,218 @@
+EVA2_3_UpdateDelete
+MySQL Shell 8.0.41
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect mc- root@localhost
+Creating a session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 10 (X protocol)
+Server version: 8.0.41 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > use tbs_eva2;
+MySQL Error 1049: Unknown database 'tbs_eva2'
+ MySQL  localhost:33060+ ssl  SQL > use tbd_eva2;
+Default schema set to `tbd_eva2`.
+Fetching global names, object names from `tbd_eva2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > show tables;
++--------------------+
+| Tables_in_tbd_eva2 |
++--------------------+
+| banco              |
+| cliente            |
+| direccioncliente   |
+| tarjeta            |
+| tarjetacliente     |
++--------------------+
+5 rows in set (0.0024 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc direccion cliente;
+ERROR: 1146: Table 'tbd_eva2.direccion' doesn't exist
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc direccioncliente;
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| direccionid | int         | NO   | PRI | NULL    | auto_increment |
+| calle       | varchar(50) | NO   |     | NULL    |                |
+| numero      | int         | NO   |     | NULL    |                |
+| colonia     | varchar(50) | NO   |     | NULL    |                |
+| cp          | int         | NO   |     | NULL    |                |
+| ciudad      | varchar(50) | NO   |     | NULL    |                |
+| estado      | varchar(50) | NO   |     | NULL    |                |
+| pais        | varchar(50) | NO   |     | NULL    |                |
+| clienteid   | int         | NO   | MUL | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+9 rows in set (0.0035 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc tarjetacliente;
++-------------+------+------+-----+---------+----------------+
+| Field       | Type | Null | Key | Default | Extra          |
++-------------+------+------+-----+---------+----------------+
+| tarjetaclID | int  | NO   | PRI | NULL    | auto_increment |
+| clienteid   | int  | NO   | MUL | NULL    |                |
+| bancoid     | int  | NO   | MUL | NULL    |                |
+| tarjetaid   | int  | NO   | MUL | NULL    |                |
++-------------+------+------+-----+---------+----------------+
+4 rows in set (0.0027 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table producto(
+                                           -> productoid int not null auto_increment,
+                                           -> nombre varchar(50) not null,
+                                           -> precio decimal (7,2) not null,
+                                           -> unidad varchar(20));
+ERROR: 1075: Incorrect table definition; there can be only one auto column and it must be defined as a key
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table producto( productoid int not null key auto_increment, nombre varchar(50) not null, precio decimal (7,2) not null, unidad varchar(20));
+Query OK, 0 rows affected (0.0685 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc ciente;
+ERROR: 1146: Table 'tbd_eva2.ciente' doesn't exist
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > desc cliente;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| clienteid | int         | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(50) | NO   |     | NULL    |                |
+| apellidos | varchar(50) | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+3 rows in set (0.0034 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table venta(
+                                           -> ventaid int not null key auto_increment,
+                                           -> fecha_venta date,
+                                           -> clienteid int not null,
+                                           -> foreign key (clienteid) references cliente (clienteid) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.0830 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > create table venta_detalle(
+                                           -> ventadetalleid int not null key auto_increment,
+                                           -> ventaid int not null,
+                                           -> productoid int not null,
+                                           -> cantidad int not null,
+                                           -> foreign key (ventaid) references venta(ventaid) on delete cascade
+                                           -> on update cascade, foreign key (productoid) references producto(productoid) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.0985 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > show tables;
++--------------------+
+| Tables_in_tbd_eva2 |
++--------------------+
+| banco              |
+| cliente            |
+| direccioncliente   |
+| producto           |
+| tarjeta            |
+| tarjetacliente     |
+| venta              |
+| venta_detalle      |
++--------------------+
+8 rows in set (0.0032 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > show create venta;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'venta' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from cliente;
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         1 | Juan   | Perez     |
+|         2 | Luis   | Garcia    |
+|         3 | Jose   | Madero    |
++-----------+--------+-----------+
+3 rows in set (0.0032 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into producto(nombre, precio, unidad)
+                                           -> values("Laptop",20000.5,"Pieza"),("Tablet",5000.45,"Pieza"),
+                                           -> ("Celular",1000.5,"Pieza");
+Query OK, 3 rows affected (0.0226 sec)
+
+Records: 3  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from producto:
+                                           -> ^C
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from producto;
++------------+---------+----------+--------+
+| productoid | nombre  | precio   | unidad |
++------------+---------+----------+--------+
+|          1 | Laptop  | 20000.50 | Pieza  |
+|          2 | Tablet  |  5000.45 | Pieza  |
+|          3 | Celular |  1000.50 | Pieza  |
++------------+---------+----------+--------+
+3 rows in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into venta (
+                                           -> fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-04",2),("2024-02-20",1),(2025-01-25",3);
+                                           ">
+                                           "> ^C
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL >                     -> fecha_venta, clienteid)  values("2025-03-06",1),(4",2),("2024-02-20",1),(2025-01-25",3);^C
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into venta(fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-04",2),("2024-02-20",1),(2025-01-25",3);
+                                           "> ^C
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into venta(fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-04",2),("2024-02-20",1),(2025-01-25",3);
+                                           "> ;
+                                           "> "
+                                           -> ;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '",3);
+;
+"' at line 1
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into venta(fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-04",2),("2024-02-20",1),("2025-01-25",3); ; " ;
+Query OK, 4 rows affected (0.0094 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+ERROR: 1065: Query was empty
+                                           "> insert into venta(fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-04",2),("2024-02-20",1),(2025-01-25",3); ; " ;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '" ;
+insert into venta(fecha_venta, clienteid)  values("2025-03-06",1),("2025-11-' at line 1
+ERROR: 1065: Query was empty
+                                           "> select * from venta;
+                                           ">
+MySQL Shell 8.0.41
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect mc- root@localhost
+Creating a session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 11 (X protocol)
+Server version: 8.0.41 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > use tbd_eva2
+Default schema set to `tbd_eva2`.
+Fetching global names, object names from `tbd_eva2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > show tables;
++--------------------+
+| Tables_in_tbd_eva2 |
++--------------------+
+| banco              |
+| cliente            |
+| direccioncliente   |
+| producto           |
+| tarjeta            |
+| tarjetacliente     |
+| venta              |
+| venta_detalle      |
++--------------------+
+8 rows in set (0.0027 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from venta;
++---------+-------------+-----------+
+| ventaid | fecha_venta | clienteid |
++---------+-------------+-----------+
+|       1 | 2025-03-06  |         1 |
+|       2 | 2025-11-04  |         2 |
+|       3 | 2024-02-20  |         1 |
+|       4 | 2025-01-25  |         3 |
++---------+-------------+-----------+
+4 rows in set (0.0013 sec)
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > insert into venta_detalle(ventaid, productoid, cantidad) values(1,1,10), (1,2,3), (1,3,5), (2,1,8),(2,2,7),(3,3,1),(4,2,5);
+Query OK, 7 rows affected (0.0200 sec)
+
+Records: 7  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  tbd_eva2  SQL > select * from venta_detalle;
++----------------+---------+------------+----------+
+| ventadetalleid | ventaid | productoid | cantidad |
++----------------+---------+------------+----------+
+|              1 |       1 |          1 |       10 |
+|              2 |       1 |          2 |        3 |
+|              3 |       1 |          3 |        5 |
+|              4 |       2 |          1 |        8 |
+|              5 |       2 |          2 |        7 |
+|              6 |       3 |          3 |        1 |
+|              7 |       4 |          2 |        5 |
++----------------+---------+------------+----------+
+Me fallo la consola :(
